@@ -8,4 +8,11 @@ This template should help get you started developing with Tauri, React and Types
 
 ```sh
 cargo tauri dev
+or 
+pnpm tauri dev
+```
+
+## deploy
+```
+pnpm tauri build
 ```
