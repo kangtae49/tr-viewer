@@ -8,12 +8,21 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "opener:allow-open-path",
-    "opener:allow-open-url",
+    "core:webview:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        { "path": "**/*" }
+      ]
+    },
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://*" }
+      ]
+    },
     "opener:allow-reveal-item-in-dir",
-    "opener:allow-default-urls"
-  ],
-  "capabilities": [
-
+    "opener:allow-default-urls",
+    "core:webview:allow-internal-toggle-devtools"
   ]
 }

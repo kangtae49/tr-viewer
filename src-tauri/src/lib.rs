@@ -1,7 +1,7 @@
 // use tauri::{Manager, Window};
 // use specta::Type;
-use specta_typescript::BigIntExportBehavior;
-use specta_typescript::Typescript;
+
+
 use tauri_specta::{collect_commands, Builder};
 mod api;
 mod dir;
@@ -98,27 +98,24 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // let config = ExportConfig::new()
-    //     .bigint(BigIntExportBehavior::Number);
-    let ts = Typescript::default()
-        .bigint(BigIntExportBehavior::Number);
 
-    let mut builder = Builder::<tauri::Wry>::new()
+    let builder = Builder::<tauri::Wry>::new()
         .commands(collect_commands![greet, read_text, read_folder, set_state, get_state, get_home_dir, get_disks, get_arg_path]);
 
     #[cfg(debug_assertions)] // <- Only export on non-release builds
-    builder
-        .export(ts, "../src/bindings.ts")
-        .expect("Failed to export typescript bindings");
+    {
+        use specta_typescript::BigIntExportBehavior;
+        use specta_typescript::Typescript;
+        let ts = Typescript::default()
+            .bigint(BigIntExportBehavior::Number);
+        builder
+            .export(ts, "../src/bindings.ts")
+            .expect("Failed to export typescript bindings");
+    }
 
 
     tauri::Builder::default()
-        // .setup(|app| {
-        //     app.manage(api::Api::default());
-        //     Ok(())
-        // })
         .plugin(tauri_plugin_opener::init())
-        // .invoke_handler(tauri::generate_handler![greet, aaa])
         // .invoke_handler(tauri::generate_handler![greet, read_text, read_folder, set_state, get_state, get_home_dir, get_disks])
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
