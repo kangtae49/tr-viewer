@@ -69,6 +69,7 @@ function FileView({ selectedItem }: FileViewProps): React.ReactElement {
             return <ViewEmbed selectedItem={selectedItem} />
           case 'Html':
             return <ViewHtml selectedItem={selectedItem} />
+            // return <ViewIframe selectedItem={selectedItem} />
           // case 'Iframe':
           //   return <ViewIframe selectedItem={selectedItem} />
           // case 'Text':
@@ -101,6 +102,7 @@ function ViewImg({ selectedItem }: FileViewProps): React.ReactElement {
 function ViewEmbed({ selectedItem }: FileViewProps): React.ReactElement {
   if (!selectedItem) {
     return <div className='view-embed'></div>
+  } else {
   }
   return (
     <div className="view-embed">
@@ -110,6 +112,8 @@ function ViewEmbed({ selectedItem }: FileViewProps): React.ReactElement {
 }
 function ViewHtml({ selectedItem }: FileViewProps): React.ReactElement {
   const [html, setHtml] = useState('')
+
+
 
   useEffect(() => {
     const fetchText = async (): Promise<string> => {
@@ -121,7 +125,19 @@ function ViewHtml({ selectedItem }: FileViewProps): React.ReactElement {
       }
     }
     fetchText().then((txt) => setHtml(txt))
+
   }, [selectedItem?.full_path])
+
+  useEffect(() => {
+    if (html) {
+      const shadow = document.querySelector('.shadow-dom')?.shadowRoot;
+      if (shadow) {
+        shadow.querySelectorAll("a").forEach((a) => {
+          a.setAttribute('target', '_blank')
+        })
+      }
+    }
+  }, [html]);
 
   return (
     <ShadowDomWrapper>
@@ -129,13 +145,13 @@ function ViewHtml({ selectedItem }: FileViewProps): React.ReactElement {
     </ShadowDomWrapper>
   )
 }
-// function ViewIframe({ selectedItem }: FileViewProps): React.ReactElement {
-//   return (
-//     <div className="view-iframe">
-//       <iframe src={selectedItem?.full_path}></iframe>
-//     </div>
-//   )
-// }
+function ViewIframe({ selectedItem }: FileViewProps): React.ReactElement {
+  return (
+    <div className="view-iframe">
+      <iframe src={selectedItem?.full_path}></iframe>
+    </div>
+  )
+}
 // function ViewText({ selectedItem }: FileViewProps): React.ReactElement {
 //   const [text, setText] = useState('')
 //
