@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FileViewType, TreeItem } from '@/types'
 import { ShadowDomWrapper } from '@components/right/contents/ShadowDomWrapper'
 import * as monaco from 'monaco-editor'
-import {formatFileSize, getFileTypeGroup, getMonacoLanguage, isMonacoFile} from '@components/utils'
+import { formatFileSize, getFileTypeGroup, getMonacoLanguage } from '@components/utils'
 import * as api from '@/api'
 import { convertFileSrc } from '@tauri-apps/api/core'
-import { fileViewTypeGroupMap } from '@components/left/contents/tree'
 import FileHead from "@components/right/contents/FileHead.tsx"
 import {useFileViewTypeMapStore} from "@store/fileViewTypeMapStore.ts"
 

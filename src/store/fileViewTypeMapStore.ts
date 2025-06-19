@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import {FileViewType, FileViewTypeMap} from '@/types'
+import { FileViewTypeMap } from '@/types'
 
 export interface FileViewTypeMapStore {
   fileViewTypeMap: FileViewTypeMap

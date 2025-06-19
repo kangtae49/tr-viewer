@@ -1,7 +1,7 @@
 import * as monaco from "monaco-editor";
 import {FileViewType, FileViewTypeGroup, TreeItem} from "@/types"
 import {
-  faFile, faFileCode, faFileLines
+  faFileCode, faFileLines
 } from '@fortawesome/free-solid-svg-icons'
 
 export const getDateFormatter = (): Intl.DateTimeFormat => {
