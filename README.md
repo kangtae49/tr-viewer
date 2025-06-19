@@ -13,6 +13,11 @@ pnpm tauri dev
 ```
 
 ## deploy
-```
+```sh
 pnpm tauri build
+```
+
+## argument test
+```sh
+pnpm tauri dev -- -- "C:\sources"
 ```

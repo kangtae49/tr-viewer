@@ -27,9 +27,10 @@ function FileHead(): React.ReactElement {
       {!selectedItem?.dir && (
         <div className="file-types">
           {
-            fileViewTypeList.map((fileViewType) => {
+            fileViewTypeList.map((fileViewType, idx) => {
               return (
                 <Icon
+                  key={idx}
                   className={fileViewType == selectedFileViewType ? 'selected' : ''}
                   icon={getFileViewIcon(fileViewType)}
                   onClick={() => clickFileViewType(fileViewType)}

@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use crate::models::{Item, MetaType, ApiError, OrderAsc, OrdItem, OrderBy};
 use crate::system_time_ext::SystemTimeExt;
-use std::path::{PathBuf};
+use std::path::{absolute, PathBuf};
 use windows::{
     core::{
         PCWSTR
@@ -339,8 +339,14 @@ pub fn sort_items(items: &mut Vec<Item>, ordering: &Vec<OrdItem>) {
 #[warn(dead_code)]
 pub fn get_arg_path() -> Option<String> {
     let args: Vec<String> = std::env::args().collect();
-    return if args.len() > 1 {
-        Some(args[1].clone())
+    if args.len() > 1 {
+        match absolute(&args[1]) {
+            Ok(path) => Some(path.to_string_lossy().to_string()),
+            Err(e) => {
+                println!("{:?}", e);
+                None
+            },
+        }
     } else {
         None
     }

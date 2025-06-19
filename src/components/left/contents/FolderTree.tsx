@@ -22,7 +22,7 @@ function FolderTree(): React.ReactElement {
   const folderTree = useFolderTreeStore((state) => state.folderTree)
   const setFolderTree = useFolderTreeStore((state) => state.setFolderTree)
   const setSelectedItem = useSelectedTreeItemStore((state) => state.setSelectedItem)
-  // const selectedItem = useSelectedTreeItemStore((state) => state.selectedItem)
+  const selectedItem = useSelectedTreeItemStore((state) => state.selectedItem)
   const setFolderTreeRef = useFolderTreeRefStore((state) => state.setFolderTreeRef)
   const folderTreeRef = useFolderTreeRefStore((state) => state.folderTreeRef)
 
@@ -36,7 +36,6 @@ function FolderTree(): React.ReactElement {
   useEffect(() => {
     api.getArgPath().then((p) => {
       if (p) {
-        // console.log('argPath:', p)
         setAbsPath(p)
       }
     })
@@ -47,12 +46,12 @@ function FolderTree(): React.ReactElement {
       fetchFolderTree({ fullPath: absPath }).then(([tree, item]) => {
         if (tree && item) {
           setFolderTree([...tree])
-          setSelectedItem({ ...item })
-          scrollToItem({ selectedItem: item, folderTree: tree, folderTreeRef })
+          setSelectedItem(item)
         }
       })
     } else {
       fetchDisks().then((folderTree: FolderTree | undefined) => {
+        console.log('else folderTree:', folderTree)
         if (folderTree) {
           setFolderTree([...folderTree])
         } else {
@@ -61,6 +60,12 @@ function FolderTree(): React.ReactElement {
       })
     }
   }, [absPath, folderTreeRef, setFolderTree, setSelectedItem])
+
+  useEffect(() => {
+    if (selectedItem) {
+      scrollToItem({ selectedItem, folderTree, folderTreeRef })
+    }
+  }, [selectedItem]);
   return (
     <AutoSizer>
       {({ height, width }) => (
