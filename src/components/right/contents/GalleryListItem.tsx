@@ -71,8 +71,8 @@ function ViewNm({ item, sliderPos }: FileViewProps): React.ReactElement {
           {nm}
         </div>
       </div>
-      {folderListVisibleCols.includes('Sz') && <div className="sz">{sz}</div>}
-      {folderListVisibleCols.includes('Ext') && <div className="ext">{ext}</div>}
+      {folderListVisibleCols.includes('Sz') && <div className="sz" title={`${item?.sz || 0}`}>{sz}</div>}
+      {folderListVisibleCols.includes('Ext') && <div className="ext" title={item?.ext || ''}>{ext}</div>}
       {folderListVisibleCols.includes('Tm') && <div className="tm">{tm}</div>}
     </div>
   )

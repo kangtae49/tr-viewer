@@ -4,7 +4,7 @@ import {
   faInbox,
   faHouseUser,
   faDownload,
-  faFileLines,
+  faFileWord,
   faVideo,
   faMusic,
   faImage,
@@ -81,7 +81,7 @@ function LeftTop(): React.ReactElement {
         title="Documents"
         onClick={() => clickHomeDir(homeDir.DocumentDir)}
       >
-        <Icon icon={faFileLines} />
+        <Icon icon={faFileWord} />
       </div>
       <div className="link video" title="Movie" onClick={() => clickHomeDir(homeDir.VideoDir)}>
         <Icon icon={faVideo} />

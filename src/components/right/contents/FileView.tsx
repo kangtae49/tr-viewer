@@ -2,15 +2,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FileViewType, TreeItem } from '@/types'
 import { ShadowDomWrapper } from '@components/right/contents/ShadowDomWrapper'
 import * as monaco from 'monaco-editor'
-import { formatFileSize } from '@components/utils'
+import {formatFileSize, getFileTypeGroup, getMonacoLanguage, isMonacoFile} from '@components/utils'
 import * as api from '@/api'
 import { convertFileSrc } from '@tauri-apps/api/core'
-// import { resourceDir } from '@tauri-apps/api/path'
+import { fileViewTypeGroupMap } from '@components/left/contents/tree'
+import FileHead from "@components/right/contents/FileHead.tsx"
+import {useFileViewTypeMapStore} from "@store/fileViewTypeMapStore.ts"
+
 
 self.MonacoEnvironment = {
   getWorkerUrl(_, label) {
     const basePath = '.'
-    console.log('basePath', basePath)
     if (label === 'json') {
       return `${basePath}/monaco-editor/esm/vs/language/json/json.worker.js`
     }
@@ -32,32 +34,18 @@ interface FileViewProps {
 }
 
 function FileView({ selectedItem }: FileViewProps): React.ReactElement {
-  let fileViewType: FileViewType
+  const fileViewTypeMap = useFileViewTypeMapStore((state) => state.fileViewTypeMap)
+  const [fileViewType, setFileViewType] = useState<FileViewType | undefined>(undefined)
+  useEffect(() => {
+    const fileViewTypeGroup = getFileTypeGroup(selectedItem)
+    const selectedFileViewType = fileViewTypeMap[fileViewTypeGroup]
+    setFileViewType(selectedFileViewType)
+  }, [selectedItem, fileViewTypeMap, fileViewType]);
 
-  const sz = selectedItem?.sz || 0
-  if (sz == 0) {
-    fileViewType = 'Empty'
-  } else if (['exe', 'com', 'msi', 'dll', 'zip'].includes(selectedItem?.ext || '')) {
-    fileViewType = 'None'
-  } else if (selectedItem?.mt?.startsWith('image/')) {
-    fileViewType = 'Img'
-  } else if (selectedItem?.mt?.endsWith('/pdf')) {
-    fileViewType = 'Embed'
-  } else if (selectedItem?.mt?.endsWith('/html')) {
-    fileViewType = 'Html'
-  } else if (selectedItem?.mt?.startsWith('audio/') && sz > 1024 * 500) {
-    fileViewType = 'Audio'
-  } else if (selectedItem?.mt?.startsWith('video/') && sz > 1024 * 500) {
-    fileViewType = 'Video'
-  } else if (isMonacoFile(selectedItem?.ext) && sz <= 5 * 1024 * 1024) {
-    fileViewType = 'Monaco'
-  } else if (sz <= 5 * 1024 * 1024) {
-    fileViewType = 'Monaco'
-  } else {
-    fileViewType = 'None'
-  }
   return (
     <>
+      <FileHead />
+      <div className='file-content'>
       {(() => {
         switch (fileViewType) {
           case 'Empty':
@@ -69,10 +57,10 @@ function FileView({ selectedItem }: FileViewProps): React.ReactElement {
           case 'Html':
             return <ViewHtml selectedItem={selectedItem} />
             // return <ViewIframe selectedItem={selectedItem} />
-          // case 'Iframe':
-          //   return <ViewIframe selectedItem={selectedItem} />
-          // case 'Text':
-          //   return <ViewText selectedItem={selectedItem} />
+          case 'Iframe':
+            return <ViewIframe selectedItem={selectedItem} />
+          case 'Text':
+            return <ViewText selectedItem={selectedItem} />
           case 'Audio':
             return <ViewAudio selectedItem={selectedItem} />
           case 'Video':
@@ -83,6 +71,7 @@ function FileView({ selectedItem }: FileViewProps): React.ReactElement {
             return <ViewNone selectedItem={selectedItem} />
         }
       })()}
+      </div>
     </>
   )
 }
@@ -111,8 +100,6 @@ function ViewEmbed({ selectedItem }: FileViewProps): React.ReactElement {
 }
 function ViewHtml({ selectedItem }: FileViewProps): React.ReactElement {
   const [html, setHtml] = useState('')
-
-
 
   useEffect(() => {
     const fetchText = async (): Promise<string> => {
@@ -151,23 +138,23 @@ function ViewIframe({ selectedItem }: FileViewProps): React.ReactElement {
     </div>
   )
 }
-// function ViewText({ selectedItem }: FileViewProps): React.ReactElement {
-//   const [text, setText] = useState('')
-//
-//   useEffect(() => {
-//     const fetchText = async (): Promise<string> => {
-//       if (selectedItem?.full_path) {
-//         const textContent = await window.api.readTextFile(selectedItem.full_path)
-//         return textContent.text || ''
-//       } else {
-//         return ''
-//       }
-//     }
-//     fetchText().then((txt) => setText(txt))
-//   }, [selectedItem?.full_path])
-//
-//   return <div className="view-text">{text}</div>
-// }
+function ViewText({ selectedItem }: FileViewProps): React.ReactElement {
+  const [text, setText] = useState('')
+
+  useEffect(() => {
+    const fetchText = async (): Promise<string> => {
+      if (selectedItem?.full_path) {
+        const textContent = await api.readText(selectedItem.full_path)
+        return textContent.text || ''
+      } else {
+        return ''
+      }
+    }
+    fetchText().then((txt) => setText(txt))
+  }, [selectedItem?.full_path])
+
+  return <div className="view-text">{text}</div>
+}
 
 function ViewAudio({ selectedItem }: FileViewProps): React.ReactElement {
   // console.log('view-audio')
@@ -259,7 +246,7 @@ function ViewMonaco({ selectedItem }: FileViewProps): React.ReactElement {
         // model,
         value: content,
         // language: 'plaintext',
-        language: getLanguage(selectedItem?.ext),
+        language: getMonacoLanguage(selectedItem?.ext),
         theme: 'vs',
         readOnly: true,
         automaticLayout: true,
@@ -269,29 +256,6 @@ function ViewMonaco({ selectedItem }: FileViewProps): React.ReactElement {
   }, [content, selectedItem])
 
   return <div className="view-monaco" ref={editorRef} />
-}
-
-function isMonacoFile(ext?: string): boolean {
-  if (!ext) {
-    return false
-  }
-  const languages = monaco.languages.getLanguages()
-  const lang = languages.find((lang) => lang.extensions?.includes(`.${ext}`))
-  return !!lang
-}
-
-function getLanguage(ext?: string): string {
-  let language = 'plaintext'
-  if (!ext) {
-    return 'plaintext'
-  }
-  const languages = monaco.languages.getLanguages()
-  // console.log('languages', languages)
-  const lang = languages.find((lang) => lang.extensions?.includes(`.${ext}`))
-  if (lang) {
-    language = lang.id
-  }
-  return language
 }
 
 export default FileView

@@ -33,3 +33,23 @@ export type FileViewType =
   | 'Audio'
   | 'Empty'
   | 'None'
+
+export type FileViewTypeGroup =
+  | 'Binary'
+  | 'Image'
+  | 'Pdf'
+  | 'Html'
+  | 'Audio'
+  | 'Video'
+  | 'UnknownEmpty'
+  | 'UnknownSmall'
+  | 'Unknown'
+
+
+export type FileViewTypeGroupMap = {
+  [key in FileViewTypeGroup]: FileViewType[];
+}
+
+export type FileViewTypeMap = {
+  [key in FileViewTypeGroup]: FileViewType;
+}

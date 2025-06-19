@@ -1,4 +1,4 @@
-import { FolderTree, TreeItem } from '@/types'
+import {FileViewTypeGroupMap, FolderTree, TreeItem} from '@/types'
 import { DiskInfo, Item, OptParams } from '@/bindings'
 import { FolderTreeStore } from '@store/folderTreeStore'
 import { FolderTreeRefStore } from '@store/folderTreeRefStore'
@@ -11,8 +11,22 @@ export const TREE_ITEM_SIZE = 18
 export const TREE_DEPT_SIZE = 13
 export const LIST_ITEM_SIZE = 18
 export const LIST_HEAD_SIZE = 25
+export const FILE_HEAD_SIZE = 25
 export const SLIDER_SIZE = 20
 export const SLIDER_STEP = 20
+
+export const fileViewTypeGroupMap: FileViewTypeGroupMap = {
+  Binary: ["None"],
+  Image: ["Img"],
+  Pdf: ["Embed"],
+  Html: ["Html", "Monaco"],
+  Video: ["Video"],
+  Audio: ["Audio"],
+  UnknownEmpty: ["Empty"],
+  UnknownSmall: ["Monaco"],
+  Unknown: ["None"],
+}
+
 
 const treeParams: OptParams = {
   cache_nm: 'folder-tree',

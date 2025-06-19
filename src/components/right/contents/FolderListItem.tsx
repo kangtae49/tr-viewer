@@ -35,8 +35,8 @@ function FolderListItem({ treeItem, style }: FolderListItemProps): React.ReactEl
           {nm}
         </div>
       </div>
-      {folderListVisibleCols.includes('Sz') && <div className="sz">{sz}</div>}
-      {folderListVisibleCols.includes('Ext') && <div className="ext">{ext}</div>}
+      {folderListVisibleCols.includes('Sz') && <div className="sz" title={`${treeItem.sz || 0}`}>{sz}</div>}
+      {folderListVisibleCols.includes('Ext') && <div className="ext" title={treeItem?.ext || ''}>{ext}</div>}
       {folderListVisibleCols.includes('Tm') && <div className="tm">{tm}</div>}
     </div>
   )

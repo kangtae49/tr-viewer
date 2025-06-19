@@ -48,3 +48,10 @@ html, body, #root {
 .fa-table-cells {color: var(--unselected-color); margin-right: 5px;}
 .fa-table-cells:hover {transform: var(--scale); color: var(--hover-color);}
 .fa-table-cells.selected {color: var(--selected-color);}
+
+.fa-file-lines {color: var(--unselected-color); margin-right: 5px;}
+.fa-file-lines:hover {transform: var(--scale); color: var(--hover-color);}
+.fa-file-lines.selected {color: var(--selected-color);}
+.fa-file-code {color: var(--unselected-color); margin-right: 5px;}
+.fa-file-code:hover {transform: var(--scale); color: var(--hover-color);}
+.fa-file-code.selected {color: var(--selected-color);}
