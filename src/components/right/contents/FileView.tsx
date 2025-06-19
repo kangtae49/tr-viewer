@@ -5,28 +5,27 @@ import * as monaco from 'monaco-editor'
 import { formatFileSize } from '@components/utils'
 import * as api from '@/api'
 import { convertFileSrc } from '@tauri-apps/api/core'
+// import { resourceDir } from '@tauri-apps/api/path'
 
-// self.MonacoEnvironment = {
-//   getWorkerUrl(_, label) {
-//     // console.log('getWorkerUrl', label)
-//     const isDev = import.meta.env.MODE === 'development'
-//     const basePath = isDev ? './src/assets' : window.api.getResourcesPath()
-//
-//     if (label === 'json') {
-//       return `${basePath}/monaco-editor/esm/vs/language/json/json.worker.js`
-//     }
-//     if (label === 'css') {
-//       return `${basePath}/monaco-editor/esm/vs/language/css/css.worker.js`
-//     }
-//     if (label === 'html') {
-//       return `${basePath}/monaco-editor/esm/vs/language/html/html.worker.js`
-//     }
-//     if (label === 'typescript' || label === 'javascript') {
-//       return `${basePath}/monaco-editor/esm/vs/language/typescript/ts.worker.js`
-//     }
-//     return `${basePath}/monaco-editor/esm/vs/editor/editor.worker.js`
-//   }
-// }
+self.MonacoEnvironment = {
+  getWorkerUrl(_, label) {
+    const basePath = '.'
+    console.log('basePath', basePath)
+    if (label === 'json') {
+      return `${basePath}/monaco-editor/esm/vs/language/json/json.worker.js`
+    }
+    if (label === 'css') {
+      return `${basePath}/monaco-editor/esm/vs/language/css/css.worker.js`
+    }
+    if (label === 'html') {
+      return `${basePath}/monaco-editor/esm/vs/language/html/html.worker.js`
+    }
+    if (label === 'typescript' || label === 'javascript') {
+      return `${basePath}/monaco-editor/esm/vs/language/typescript/ts.worker.js`
+    }
+    return `${basePath}/monaco-editor/esm/vs/editor/editor.worker.js`
+  }
+}
 
 interface FileViewProps {
   selectedItem?: TreeItem | undefined

@@ -18,7 +18,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost blob: data:; object-src 'self' asset: http://asset.localhost blob: data:; frame-src 'self' asset: http://asset.localhost blob: data:; media-src 'self' asset: http://asset.localhost blob: data:;",
+      "csp": null,
       "assetProtocol": {"enable":  true, "scope": ["**"]}
     }
   },
