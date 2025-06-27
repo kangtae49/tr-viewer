@@ -36,6 +36,7 @@ function FileView({ selectedItem }: FileViewProps): React.ReactElement {
   const fileViewTypeMap = useFileViewTypeMapStore((state) => state.fileViewTypeMap)
   const [fileViewType, setFileViewType] = useState<FileViewType | undefined>(undefined)
   useEffect(() => {
+    console.log("FileView useEffect", fileViewType)
     const fileViewTypeGroup = getFileTypeGroup(selectedItem)
     const selectedFileViewType = fileViewTypeMap[fileViewTypeGroup]
     setFileViewType(selectedFileViewType)

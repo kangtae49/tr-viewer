@@ -21,7 +21,7 @@ use std::os::windows::ffi::{OsStrExt};
 use mime_guess::from_path;
 use windows::Win32::Storage::FileSystem::FILE_ATTRIBUTE_DIRECTORY;
 use windows::core::Error as WinError;
-
+use natord::compare;
 
 type Result<T> = std::result::Result<T, ApiError>;
 
@@ -281,7 +281,7 @@ pub fn update_items(items: &mut Vec<Item>, meta_types: &Vec<MetaType>) {
 
 
 fn cmp_item<T: Ord>(a: &T, b: &T, asc: &OrderAsc) -> Option<Ordering> {
-    if a.ne(&b) {
+    if a.ne(b) {
         return if asc == &OrderAsc::Asc {
             Some(a.cmp(b))
         } else {
@@ -291,10 +291,21 @@ fn cmp_item<T: Ord>(a: &T, b: &T, asc: &OrderAsc) -> Option<Ordering> {
     None
 }
 
+fn cmp_item_nat(a: &String, b: &String, asc: &OrderAsc) -> Option<Ordering> {
+    if a.ne(b) {
+        return if asc == &OrderAsc::Asc {
+            Some(compare(a, b))
+        } else {
+            Some(compare(b, a))
+        }
+    }
+    None    
+}
+
 fn cmp_str_item(a: &String, b: &String, asc: &OrderAsc) -> Option<Ordering> {
     let a = a.to_lowercase();
     let b = b.to_lowercase();
-    cmp_item(&a, &b, asc)
+    cmp_item_nat(&a, &b, asc)
 }
 
 fn cmp_opt_str_item(a: &Option<String>, b: &Option<String>, asc: &OrderAsc) -> Option<Ordering> {
